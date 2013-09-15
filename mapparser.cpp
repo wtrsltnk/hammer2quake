@@ -3,24 +3,25 @@
 MapParser::MapParser(const std::string& input)
     : _input(input)
 {
-    this->_file = fopen(input.c_str(), "r");
+    this->_file.open(input.c_str(), std::ios::in);
 }
 
 MapParser::~MapParser()
 {
-    if (this->_file != 0)
-        fclose(this->_file);
-    this->_file = 0;
+    this->_file.close();
 }
 
-std::vector<std::string> MapParser::ReadNextLine()
+std::string MapParser::ReadNextLine()
 {
-    std::vector<std::string> result;
+    std::string result;
+
+    if (this->_file.is_open() && this->_file.good())
+        std::getline(this->_file, result);
 
     return result;
 }
 
 bool MapParser::HasNextLine()
 {
-    return true;
+    return (this->_file.is_open() && this->_file.good());
 }

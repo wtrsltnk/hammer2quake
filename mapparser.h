@@ -3,7 +3,8 @@
 
 #include <string>
 #include <vector>
-#include <stdio.h>
+#include <iostream>
+#include <fstream>
 
 class MapParser
 {
@@ -23,7 +24,7 @@ public:
 
 protected:
     /// Reads one line and tokenizes it
-    std::vector<std::string> ReadNextLine();
+    std::string ReadNextLine();
 
     /// Returns true as long there is a new line
     bool HasNextLine();
@@ -33,7 +34,7 @@ protected:
     std::string _gameRoot;
 
 private:
-    FILE* _file;
+    std::ifstream _file;
 };
 
 #endif // MAPPARSER_H

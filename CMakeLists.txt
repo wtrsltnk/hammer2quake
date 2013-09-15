@@ -25,8 +25,11 @@ endif (USE_GLIMAGE)
 include_directories("${CMAKE_SOURCE_DIR}/../common/")
 
 set(src_app
-        main.cpp
-        mapparser.cpp
+    ../common/tokenizer.cpp
+    ../common/log.cpp
+    main.cpp
+    mapparser.cpp
+    hammer2quake.cpp
 )
 
 add_executable(map-q3-hl ${src_app})
