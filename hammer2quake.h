@@ -2,6 +2,8 @@
 #define HAMMER2QUAKE_H
 
 #include "mapparser.h"
+#include "material.h"
+#include <set>
 
 class Hammer2Quake : public MapParser
 {
@@ -14,6 +16,8 @@ public:
 
 private:
     std::string _wads;
+    std::set<std::string> _textures;
+    Material::Collection _materials;
 };
 
 #endif // HAMMER2QUAKE_H

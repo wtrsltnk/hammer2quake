@@ -28,8 +28,9 @@ set(src_app
     ../common/tokenizer.cpp
     ../common/log.cpp
     main.cpp
-    mapparser.cpp
     hammer2quake.cpp
+    mapparser.cpp
+    material.cpp
 )
 
 add_executable(map-q3-hl ${src_app})

@@ -24,6 +24,8 @@ bool Hammer2Quake::ParseMapFile(const std::string &output)
         while (this->HasNextLine())
         {
             std::string line = this->ReadNextLine();
+            if (line == "")
+                break;
 
             bool isFaceLine = false;
             if (line[0] == '(')
@@ -59,6 +61,7 @@ bool Hammer2Quake::ParseMapFile(const std::string &output)
 
                 if (isFaceLine)
                 {
+                    this->_textures.insert(tokens[15]);
                     for (int i = 0; i < 16; i++)
                         quakemap << tokens[i] << " ";
 
@@ -86,10 +89,7 @@ bool Hammer2Quake::ParseMapFile(const std::string &output)
                         tokens.push_back(tok.GetToken());
 
                     if (tokens.size() == 2)
-                    {
-                        cout << "Found wads:" << endl << tokens[1] << endl;
                         this->_wads = tokens[1];
-                    }
                 }
             }
 
@@ -112,8 +112,17 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
 
 bool Hammer2Quake::ParseTextures(const std::string &output)
 {
-    std::vector<std::string> tokens;
-    split(this->_wads, ';', tokens);
-    cout << tokens.size() << endl;
-    return true;
+    if (this->_textures.size() > 0 && this->_wads != "")
+    {
+        this->_materials = Material::LoadCollection(this->_gameRoot + "/map-materials.mtr");
+
+        std::vector<std::string> tokens;
+        split(this->_wads, ';', tokens);
+        return true;
+    }
+    else
+    {
+        cout << "No textures and/or wads found. Did ParseMapFile() run?" << endl;
+        return false;
+    }
 }

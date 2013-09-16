@@ -42,8 +42,10 @@ int main(int argc, char* argv[])
         if (parser.ParseMapFile(output_map))
         {
             cout << "Map output to: " << output_map << endl;
-            if (parser.ParseTextures(output_textures))
+            if (parser.ParseTextures(output_textures) == true)
                 cout << "Textures output to: " << output_textures << endl;
+            else
+                cout << "No texture output." << endl;
         }
     }
 	return 0;
