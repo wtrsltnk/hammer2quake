@@ -15,38 +15,41 @@ namespace ParseType
 
 int main(int argc, char* argv[])
 {
-    ParseType::eType parsertype = ParseType::Unknown;
-    string input, output_map, output_textures, gameroot;
+    ParseType::eType parserType = ParseType::Unknown;
+    bool parseTextures = true;
 
+    vector<string> args;
     for (int i = 0; i < argc; i++)
     {
         string arg = string(argv[i]);
-        if (arg == "--hammer2quake")
-            parsertype = ParseType::Hammer2Quake;
-        if (arg == "--quake2hammer")
-            parsertype = ParseType::Quake2Hammer;
-        if (arg == "--input" && i < argc-1)
-            input = string(argv[++i]);
-        if (arg == "--output-map" && i < argc-1)
-            output_map = string(argv[++i]);
-        if (arg == "--output-textures" && i < argc-1)
-            output_textures = string(argv[++i]);
-        if (arg == "--gameroot" && i < argc-1)
-            gameroot = string(argv[++i]);
+        if (arg == std::string("--hammer2quake"))
+            parserType = ParseType::Hammer2Quake;
+        else if (arg == std::string("--quake2hammer"))
+            parserType = ParseType::Quake2Hammer;
+        else if (arg == std::string("--parse-textures") && i + 1 < argc)
+            parseTextures = (std::string(args[i + 1]) == std::string("yes"));
+        else
+            args.push_back(arg);
     }
 
-    if (parsertype == ParseType::Hammer2Quake)
+    if (parserType == ParseType::Hammer2Quake)
     {
-        Hammer2Quake parser(input);
-        parser.SetGameRoot(gameroot);
-        if (parser.ParseMapFile(output_map))
+        Hammer2Quake parser(args);
+        parser.PrintSummary();
+
+        cout << "Parsing MAP file...";
+        if (parser.ParseMapFile())
         {
-            cout << "Map output to: " << output_map << endl;
-            if (parser.ParseTextures(output_textures) == true)
-                cout << "Textures output to: " << output_textures << endl;
-            else
-                cout << "No texture output." << endl;
+            cout << "done!" << endl;
+
+            if (parseTextures)
+            {
+                cout << "Parsing textures for MAP file...";
+                if (parser.ParseTextures())
+                    cout << "done!" << endl;
+            }
         }
+        parser.PrintResults();
     }
 	return 0;
 }

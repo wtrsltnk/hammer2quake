@@ -10,17 +10,20 @@ class MapParser
 {
 public:
     /// Input is the full path to the input map file.
-    MapParser(const std::string& input);
+    MapParser(const std::vector<std::string>& args);
     virtual ~MapParser();
 
     /// Ouput is a path to the target file.
-    virtual bool ParseMapFile(const std::string& output) = 0;
+    virtual bool ParseMapFile() = 0;
 
     /// Ouput is a path to a folder.
-    virtual bool ParseTextures(const std::string& output) = 0;
+    virtual bool ParseTextures() = 0;
 
-    /// Sets the gameroot which might be helpfull parsing the map/textures
-    void SetGameRoot(const std::string& gameRoot) { this->_gameRoot = gameRoot; }
+    /// Print a friendly text about the input found through commanline parameters.
+    virtual void PrintSummary() = 0;
+
+    /// Print a friendly result text about the executed actions.
+    virtual void PrintResults() = 0;
 
 protected:
     /// Reads one line and tokenizes it
@@ -30,7 +33,13 @@ protected:
     bool HasNextLine();
 
 protected:
-    const std::string& _input;
+    /// Input arguments from main()
+    const std::vector<std::string> _args;
+
+    /// Input MAP file
+    std::string _input;
+
+    /// The root folder where the input texture files can be found
     std::string _gameRoot;
 
 private:

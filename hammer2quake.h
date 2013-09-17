@@ -8,13 +8,19 @@
 class Hammer2Quake : public MapParser
 {
 public:
-    Hammer2Quake(const std::string& input);
+    Hammer2Quake(const std::vector<std::string>& args);
     virtual ~Hammer2Quake();
 
-    virtual bool ParseMapFile(const std::string &output);
-    virtual bool ParseTextures(const std::string &output);
+    virtual bool ParseMapFile();
+    virtual bool ParseTextures();
+
+    virtual void PrintSummary() { }
+    virtual void PrintResults() { }
 
 private:
+    std::string _outputMap;
+    std::string _outputRoot;
+    std::string _shaderScript;
     std::string _wads;
     std::set<std::string> _textures;
     Material::Collection _materials;

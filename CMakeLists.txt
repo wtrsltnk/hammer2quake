@@ -25,12 +25,14 @@ endif (USE_GLIMAGE)
 include_directories("${CMAKE_SOURCE_DIR}/../common/")
 
 set(src_app
-    ../common/tokenizer.cpp
     ../common/log.cpp
+    ../common/targa.cpp
+    ../common/tokenizer.cpp
     main.cpp
     hammer2quake.cpp
     mapparser.cpp
     material.cpp
+    wadfile.cpp
 )
 
 add_executable(map-q3-hl ${src_app})

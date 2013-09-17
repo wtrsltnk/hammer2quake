@@ -1,9 +1,17 @@
 #include "mapparser.h"
 
-MapParser::MapParser(const std::string& input)
-    : _input(input)
+MapParser::MapParser(const std::vector<std::string>& args)
+    : _args(args)
 {
-    this->_file.open(input.c_str(), std::ios::in);
+    for (int i = 0; i < int(args.size()); i++)
+    {
+        std::string arg = args[i];
+        if (arg == std::string("--input") && i + 1 < int(args.size()))
+            this->_input = args[i + 1];
+        else if (arg == std::string("--game-root") && i + 1 < int(args.size()))
+            this->_gameRoot = args[i + 1];
+    }
+    this->_file.open(this->_input.c_str(), std::ios::in);
 }
 
 MapParser::~MapParser()

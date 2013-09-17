@@ -14,12 +14,14 @@ public:
     virtual ~Material();
 
     void AddLine(const std::string& line);
+    void WriteToStream(std::ofstream& stream);
 private:
     const std::string _name;
     std::vector<std::string> _lines;
 
 public:
-    static Collection LoadCollection(const std::string& filename);
+    static int LoadCollection(const std::string& filename, Collection& collection);
+    static void SaveCollection(const std::string& filename, Collection& collection);
 
 };
 
