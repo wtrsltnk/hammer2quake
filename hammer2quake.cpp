@@ -5,6 +5,7 @@
 #include <algorithm>
 #include "tokenizer.h"
 #include "wadfile.h"
+#include "targa.h"
 
 using namespace std;
 
@@ -123,6 +124,13 @@ std::vector<std::string> &split(const std::string &s, char delim, std::vector<st
     return elems;
 }
 
+bool FileExists(const std::string& filename)
+{
+    ifstream Infield(filename.c_str());
+
+    return Infield.good();
+}
+
 bool Hammer2Quake::ParseTextures()
 {
     if (this->_textures.size() > 0 && this->_wads != "")
@@ -144,6 +152,7 @@ bool Hammer2Quake::ParseTextures()
 
         // Create materials description file
         Material::LoadCollection(this->_outputRoot + "/" + this->_shaderScript, this->_materials);
+
         for (std::set<std::string>::iterator tex = this->_textures.begin(); tex != this->_textures.end(); ++tex)
         {
             std::string str = (*tex);
@@ -153,11 +162,28 @@ bool Hammer2Quake::ParseTextures()
                 m->AddLine(std::string("    diffusemap textures/") + str);
                 this->_materials.insert(std::make_pair(str, m));
             }
+
+            std::string texturefile(this->_outputRoot + "/textures/" + str + ".tga");
+            if (FileExists(texturefile) == false)
+            {
+                // Export textures from one of the WAD files to a TGA file
+                for (std::vector<WadFile*>::iterator w = wadfiles.begin(); w != wadfiles.end(); ++w)
+                {
+                    WadFile* wad = (*w);
+                    miptex_t* m = wad->FindTexture(str.c_str());
+                    if (m != 0)
+                    {
+                        this->MiptexToTGA(m, texturefile);
+                        break; // Exit the for-loop
+                    }
+                    else
+                    {
+                        cout << "Did not find " << str << " in " << wad->GetFilename() << endl;
+                    }
+                }
+            }
         }
         Material::SaveCollection(this->_outputRoot + "/" + this->_shaderScript, this->_materials);
-
-        // Export textures from one of the WAD files to a TGA file
-        /// TODO
 
         // Clean-up wadfiles
         while (wadfiles.empty() == false)
@@ -173,4 +199,41 @@ bool Hammer2Quake::ParseTextures()
         cout << "No textures and/or wads found. Did ParseMapFile() run?" << endl;
         return false;
     }
+}
+
+void Hammer2Quake::MiptexToTGA(miptex_t* miptex, const std::string& tgafile)
+{
+    int size = miptex->width * miptex->height;
+
+    unsigned char* indices = (unsigned char*)miptex + miptex->offsets[0];
+    unsigned char* palette = (unsigned char*)miptex + miptex->offsets[3] + (size / 64) + 2;
+
+    unsigned char* image = new unsigned char[size * 4];
+
+    int pos = 0;
+    for (int i = 0; i < size; i++)
+    {
+        unsigned char rgba[4] = { 	palette[indices[i]*3],
+                            palette[indices[i]*3 + 1],
+                            palette[indices[i]*3 + 2],
+                                255};
+
+        image[pos++] = rgba[0];//palette[indices[i]*3];
+        image[pos++] = rgba[1];//palette[indices[i]*3 + 1];
+        image[pos++] = rgba[2];//palette[indices[i]*3 + 2];
+        image[pos++] = rgba[3];//255;
+    }
+
+    tga_result r = tga_write_rgb(tgafile.c_str(), image, miptex->width, miptex->height, 32);
+
+    if (r != TGA_NOERR)
+    {
+        cout << tga_error(r) << endl;
+    }
+    else
+    {
+        cout << "TGA written: " << tgafile << endl;
+    }
+
+    delete []image;
 }
