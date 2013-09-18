@@ -4,6 +4,36 @@
 
 using namespace std;
 
+WadFile::WadFile(const char* filename)
+    : _filename(filename)
+{
+    this->_file = fopen(filename, "rb");
+
+    if (this->_file != 0)
+    {
+        fseek(this->_file, 0, SEEK_END);
+        this->_size = ftell(this->_file);
+        fseek(this->_file, 0, SEEK_SET);
+        fread((void*)&this->_header, 1, sizeof(tWadHeader), this->_file);
+
+        this->_lumps = new tWadLump[this->_header.numlumps];
+        fseek(this->_file, this->_header.infotableofs, SEEK_SET);
+        fread(this->_lumps, this->_header.numlumps, sizeof(tWadLump), this->_file);
+    }
+    else
+    {
+        cout << "File not found: " << filename << endl;
+    }
+}
+
+WadFile::~WadFile()
+{
+    if (this->_file != 0)
+    {
+        fclose(this->_file);
+    }
+}
+
 int WadFile::FindTextureIndex(const char* name)
 {
     for (int i = 0; i < this->_header.numlumps; i++)
@@ -35,34 +65,4 @@ char* WadFile::GetMiptex(int index)
 int WadFile::GetMiptexCount()
 {
     return this->_header.numlumps;
-}
-
-WadFile::WadFile(const char* filename)
-    : _filename(filename)
-{
-    this->_file = fopen(filename, "rb");
-	
-    if (this->_file != 0)
-	{
-        fseek(this->_file, 0, SEEK_END);
-        this->_size = ftell(this->_file);
-        fseek(this->_file, 0, SEEK_SET);
-        fread((void*)&this->_header, 1, sizeof(tWadHeader), this->_file);
-
-        this->_lumps = new tWadLump[this->_header.numlumps];
-        fseek(this->_file, this->_header.infotableofs, SEEK_SET);
-        fread(this->_lumps, this->_header.numlumps, sizeof(tWadLump), this->_file);
-	}
-	else
-	{
-        cout << "File not found: " << filename << endl;
-	}
-}
-
-WadFile::~WadFile()
-{
-    if (this->_file != 0)
-	{
-        fclose(this->_file);
-	}
 }

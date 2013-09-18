@@ -104,8 +104,10 @@ bool Hammer2Quake::ParseMapFile()
                     while (tok.NextToken())
                         tokens.push_back(tok.GetToken());
 
-                    if (tokens.size() == 2)
-                        this->_wads = tokens[1];
+                    if (tokens.size() == 2 && tokens[0] == string("wad"))
+                 {
+                        cout << "Found wads: " << line << endl;       this->_wads = tokens[1];
+                    }
                 }
             }
 
