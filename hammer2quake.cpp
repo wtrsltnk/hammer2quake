@@ -35,6 +35,7 @@ bool Hammer2Quake::ParseMapFile()
 
     if (quakemap.good())
     {
+        int parsedLines = 0;
         while (this->HasNextLine())
         {
             std::string line = this->ReadNextLine();
@@ -75,6 +76,7 @@ bool Hammer2Quake::ParseMapFile()
 
                 if (isFaceLine)
                 {
+                    parsedLines++;
                     this->_textures.insert(tokens[15]);
                     for (int i = 0; i < 16; i++)
                         quakemap << tokens[i] << " ";
@@ -110,6 +112,7 @@ bool Hammer2Quake::ParseMapFile()
             quakemap << std::endl;
         }
         quakemap.close();
+        cout << parsedLines << " brush sides parsed" << endl;
     }
     return true;
 }
@@ -150,8 +153,10 @@ bool Hammer2Quake::ParseTextures()
             wadfiles.push_back(new WadFile(fullwad.c_str()));
         }
 
+        std::string materials = std::string(this->_outputRoot + "/" + this->_shaderScript);
+
         // Create materials description file
-        Material::LoadCollection(this->_outputRoot + "/" + this->_shaderScript, this->_materials);
+        Material::LoadCollection(materials, this->_materials);
 
         for (std::set<std::string>::iterator tex = this->_textures.begin(); tex != this->_textures.end(); ++tex)
         {
@@ -176,14 +181,10 @@ bool Hammer2Quake::ParseTextures()
                         this->MiptexToTGA(m, texturefile);
                         break; // Exit the for-loop
                     }
-                    else
-                    {
-                        cout << "Did not find " << str << " in " << wad->GetFilename() << endl;
-                    }
                 }
             }
         }
-        Material::SaveCollection(this->_outputRoot + "/" + this->_shaderScript, this->_materials);
+        Material::SaveCollection(materials, this->_materials);
 
         // Clean-up wadfiles
         while (wadfiles.empty() == false)
@@ -227,13 +228,23 @@ void Hammer2Quake::MiptexToTGA(miptex_t* miptex, const std::string& tgafile)
     tga_result r = tga_write_rgb(tgafile.c_str(), image, miptex->width, miptex->height, 32);
 
     if (r != TGA_NOERR)
-    {
         cout << tga_error(r) << endl;
-    }
-    else
-    {
-        cout << "TGA written: " << tgafile << endl;
-    }
 
     delete []image;
+}
+
+void Hammer2Quake::PrintSummary()
+{
+    cout << "Parsing Hammer MAP file to Radiant/Quake MAP file" << endl;
+    cout << "Input MAP file        : " << this->_input << endl;
+    cout << "Input game root       : " << this->_gameRoot << endl;
+    cout << "Output MAP file       : " << this->_outputMap << endl;
+    cout << "Output texture folder : " << this->_outputRoot << endl;
+    cout << "Output shader script  : " << this->_shaderScript << endl;
+    cout << endl;
+}
+
+void Hammer2Quake::PrintResults()
+{
+
 }

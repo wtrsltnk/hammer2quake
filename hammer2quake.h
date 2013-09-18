@@ -15,8 +15,8 @@ public:
     virtual bool ParseMapFile();
     virtual bool ParseTextures();
 
-    virtual void PrintSummary() { }
-    virtual void PrintResults() { }
+    virtual void PrintSummary();
+    virtual void PrintResults();
 
 private:
     std::string _outputMap;

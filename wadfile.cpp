@@ -7,13 +7,8 @@ using namespace std;
 int WadFile::FindTextureIndex(const char* name)
 {
     for (int i = 0; i < this->_header.numlumps; i++)
-    {
         if (strcmp(this->_lumps[i].name, name) == 0)
-        {
-            cout << i << " : " << this->_lumps[i].name << endl;
             return i;
-        }
-    }
     return -1;
 }
 

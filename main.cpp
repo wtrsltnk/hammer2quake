@@ -2,6 +2,11 @@
 #include <string>
 #include "hammer2quake.h"
 
+#define APPLICATION_NAME            "Map-Q3-HL"
+#define APPLICATION_VERSION         "0.1.0"
+#define APPLICATION_AUTHOR          "Wouter Saaltink"
+#define APPLICATION_DATE            "18 September 2013"
+
 using namespace std;
 
 namespace ParseType
@@ -13,8 +18,19 @@ namespace ParseType
     };
 }
 
+void PrintApplicationInfo()
+{
+    cout << APPLICATION_VERSION << endl;
+    cout << APPLICATION_NAME << endl;
+    cout << APPLICATION_AUTHOR << endl;
+    cout << APPLICATION_DATE << endl;
+    cout << endl;
+}
+
 int main(int argc, char* argv[])
 {
+    PrintApplicationInfo();
+
     ParseType::eType parserType = ParseType::Unknown;
     bool parseTextures = true;
 
@@ -37,16 +53,13 @@ int main(int argc, char* argv[])
         Hammer2Quake parser(args);
         parser.PrintSummary();
 
-        cout << "Parsing MAP file...";
+        cout << "--- Parsing MAP file ---" << endl;
         if (parser.ParseMapFile())
         {
-            cout << "done!" << endl;
-
             if (parseTextures)
             {
-                cout << "Parsing textures for MAP file...";
-                if (parser.ParseTextures())
-                    cout << "done!" << endl;
+                cout << "--- Parsing textures ---" << endl;
+                parser.ParseTextures();
             }
         }
         parser.PrintResults();
