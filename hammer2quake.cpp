@@ -173,6 +173,8 @@ bool Hammer2Quake::ParseTextures()
             std::string texturefile(this->_outputRoot + "/textures/" + str + ".tga");
             if (FileExists(texturefile) == false)
             {
+                bool exported = false;
+                cout << endl << "Exporting " << texturefile << "...";
                 // Export textures from one of the WAD files to a TGA file
                 for (std::vector<WadFile*>::iterator w = wadfiles.begin(); w != wadfiles.end(); ++w)
                 {
@@ -181,9 +183,11 @@ bool Hammer2Quake::ParseTextures()
                     if (m != 0)
                     {
                         this->MiptexToTGA(m, texturefile);
+                        exported = true;
                         break; // Exit the for-loop
                     }
                 }
+                cout << (exported ? "done." : "not found.") << endl;
             }
         }
         Material::SaveCollection(materials, this->_materials);

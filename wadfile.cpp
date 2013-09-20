@@ -37,7 +37,7 @@ WadFile::~WadFile()
 int WadFile::FindTextureIndex(const char* name)
 {
     for (int i = 0; i < this->_header.numlumps; i++)
-        if (strcmp(this->_lumps[i].name, name) == 0)
+        if (stricmp(this->_lumps[i].name, name) == 0)
             return i;
     return -1;
 }
