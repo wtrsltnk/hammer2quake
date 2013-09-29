@@ -18,7 +18,7 @@ void Material::AddLine(const std::string& line)
 
 void Material::WriteToStream(std::ofstream& stream)
 {
-    stream << this->_name << endl
+    stream << "textures/" << this->_name << endl
            << "{" << endl;
     for (vector<string>::iterator i = this->_lines.begin(); i != this->_lines.end(); ++i)
         stream << (*i) << endl;

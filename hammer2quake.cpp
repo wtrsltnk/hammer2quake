@@ -10,7 +10,7 @@
 using namespace std;
 
 Hammer2Quake::Hammer2Quake(const std::vector<std::string>& args)
-    : MapParser(args), _shaderScript("materials/hammer-shaders.mtr")
+    : MapParser(args), _shaderScript("scripts/default.shader")
 {
     for (int i = 0; i < int(args.size()); i++)
     {
