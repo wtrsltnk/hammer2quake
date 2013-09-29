@@ -1,6 +1,7 @@
 #include "wadfile.h"
 #include <string>
 #include <iostream>
+#include <strings.h>
 
 using namespace std;
 
@@ -37,7 +38,11 @@ WadFile::~WadFile()
 int WadFile::FindTextureIndex(const char* name)
 {
     for (int i = 0; i < this->_header.numlumps; i++)
+#ifdef WIN32
         if (stricmp(this->_lumps[i].name, name) == 0)
+#else
+        if (strcasecmp(this->_lumps[i].name, name) == 0)
+#endif
             return i;
     return -1;
 }
