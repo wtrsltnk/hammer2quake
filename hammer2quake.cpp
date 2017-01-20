@@ -3,9 +3,9 @@
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include "tokenizer.h"
+#include "common/tokenizer.h"
 #include "wadfile.h"
-#include "targa.h"
+#include "common/targa.h"
 
 using namespace std;
 
